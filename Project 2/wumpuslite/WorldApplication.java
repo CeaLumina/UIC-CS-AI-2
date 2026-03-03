@@ -39,9 +39,13 @@ class WorldApplication {
 		boolean nonDeterministicMode = true;
 		boolean randomAgentLoc = false;
 		boolean userDefinedSeed = false;
+
+
 		
 		String outFilename = "wumpus_out.txt";
-		
+
+
+
 	    Random rand = new Random();
 	    int seed = rand.nextInt();
 		
@@ -159,7 +163,7 @@ class WorldApplication {
 
 			    wumpusEnvironment = new Environment(worldSize, wumpusWorld, outputWriter);
 
-		    	System.runFinalization();
+		    	// System.runFinalization();
 		    }
 
 		    for (int i = 0; i < numTrials; i++) {
@@ -183,7 +187,7 @@ class WorldApplication {
 	    	System.out.println("An exception was thrown: " + e);
 	    }
 	    
-	    System.out.println("\nFinished.");	    
+	    System.out.println("\nFinished.");
 	}
 	
 	public static char[][][] generateRandomWumpusWorld(int seed, int size, boolean randomlyPlaceAgent) {

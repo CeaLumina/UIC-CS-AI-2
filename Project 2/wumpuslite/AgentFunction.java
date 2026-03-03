@@ -156,34 +156,18 @@ class AgentFunction {
 				}
 			}
 			
-			// and we also note that a wumpus is dead by 
+			// and we also note that a wumpus is dead by replacing the spot where the Wumpus was with an "X" representing a dead Wumpus.
 			this.currentWorld[xLoc+xOffset][yLoc+yOffset][2]="X";
-			// we also do the same for replacing the "W" character with "X", as it's possible we 100% knew that a wumpus was there.
 			
-			// We also need to clear up the case wherein it wasn't certain that the wumpus was in that position.
-			// As such, we clear any other 
+			// Now that that's done, we move on.
 		}
-		// If no such easy solution exists, time for a simple bit of information gathering and updating.
-		
-		// To reduce irrelevant calcuations we check to make sure our current space is a yet unexplored one.
-		// To do this, we check to see if the current location, on 3rd dimention layer 0, is equal to "?".
-		else if (currentWorld[xLoc][yLoc][0].equalsIgnoreCase("?")) {
-			// If this is an unexplored tile, we need to gather information through our percepts.
-			// To start, we check for the two most important percepts:
-			
-		}
-		
-		
-		String relevantPercepts="";
-		
-		// if we feel a breeze, we append "B" to our relevantPercepts string.
-		if (breeze) {
-			relevantPercepts+="B";
-		}
-		
-		if (stench) {
-			
-		}
+		// Once those special cases are done, we do a simple bit of handling our current percepts.
+		// Specifically, we use our current x and y coord and whether we felt a breeze/stench to update our world model.
+		// To do this, I made a helper function for each, so see below for those.
+
+		handleBreeze(breeze, xLoc, yLoc);
+		handleStench(stench, xLoc, yLoc);
+
 		
 
 		// If we bumped into a wall, we turn left. Left was chosen due to the fact that the 
@@ -205,10 +189,51 @@ class AgentFunction {
 		// If none of the above are true, we're safe to move forward.
 	    return Action.GO_FORWARD;
 	}
+
+	// Function for updating world model based on whether Breeze was felt.
+	private void handleBreeze(boolean breezeGot, int xLoc, int yLoc) {
+
+		// To start, we split this into 2 cases, either we felt a breeze, or we didn't.
+
+		// If we read a breeze, we need to state that all adjacent tiles could pits in it.
+		if (breezeGot) {
+			boolean foundValidPos;
+			int[] lastValidPos= new int[2];
+			for (int i =-1; i <= 1; i++) {
+				for (int j =-1; j <= 1; j++) {
+					// note the use of XOR operator. This ensures this only works when exactly 1 of these values is equal to 0.
+					if ((i==0) ^ (j==0)) {
+						// a bunch of cases to ensure we don't check an array index that doesn't exist...
+						if (xLoc+i<1) continue;
+						if (xLoc+i>4) continue;
+						if (yLoc+j<1) continue;
+						if (yLoc+j>4) continue;
+
+						// this checks has us looping through all adjacent tiles *that we haven't already stepped in*.
+						// If we've stepped in it, we already know what's there, obviously.
+						if (!currentWorld[xLoc+i][yLoc+j][0].equals("?")) {
+							currentWorld[xLoc+i][yLoc+j][1] = "P?";
+						}
+					}
+				}
+			}
+		}
+		else {
+
+		}
+	}
+
+	// Function for updating world model based on whether Stench was felt.
+	private void handleStench(boolean stenchGot, int xLoc, int yLoc) {
+
+	}
 	
 	// public method to return the agent's name
 	// do not remove this method
 	public String getAgentName() {
 		return agentName;
 	}
+
+
+
 }
